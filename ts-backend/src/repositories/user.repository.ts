@@ -58,3 +58,20 @@ else{false};
     }
     return false;
 }
+
+export const updateUserwithTweetIdRepo =async(userId:string,tweetId:String): Promise<Boolean>=>
+{
+    
+    try{
+const result=await UserModel.findOneAndUpdate({uid:userId},{$push: {tweets: tweetId}},{new:true});
+if(result){
+    return true;
+}
+else{false};
+    }
+    catch(error){
+        console.log(error)
+        return false;
+    }
+    return false;
+}

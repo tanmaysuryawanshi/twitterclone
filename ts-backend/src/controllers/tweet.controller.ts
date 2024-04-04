@@ -1,7 +1,7 @@
 import {Request,Response} from "express"
 import { getTweetRepo,createTweetRepo,deleteTweetRepo,updateTweetRepo } from "../repositories/tweet.repository"
 import { ITweetInterface } from "../database/interfaces/tweet.interface"
-
+import { updateUserwithTweetIdRepo } from "../repositories/user.repository"
 export const getTweetController=async(req:Request,res:Response)=>{
     const tweetId=req.params.tweetId as string;
 try {
@@ -27,7 +27,12 @@ export const createTweetController=async(req:Request,res:Response)=>{
 try {
 const success= await createTweetRepo(tweet)
 if(success){
-    res.status(200).json({"data":tweet})
+    const userUpdateSuccess=await updateUserwithTweetIdRepo(tweet.adminId,tweet.tweetId)
+    if(userUpdateSuccess){
+    res.status(200).json({"data":tweet})}
+    else{
+        res.status(500).json({"error":"User not updated"})
+    }
 
 }
 else{
@@ -46,6 +51,7 @@ export const updateTweetController=async(req:Request,res:Response)=>{
 try {
 const success= await updateTweetRepo(updatedTweet.tweetId,updatedTweet)
 if(success){
+
     res.status(200).json({"data":updatedTweet})
 
 }
