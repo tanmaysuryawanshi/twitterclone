@@ -1,0 +1,20 @@
+
+services:
+  flutter-app:
+    build:
+      context: app
+      dockerfile: ./frontend.Dockerfile
+    ports:
+      - 8080:80
+
+  ts-backend:
+
+    build:
+      context: ts-backend
+      dockerfile: ./backend.Dockerfile    
+    ports:
+      - 3000:3000
+    env_file:
+      - /ts-backend/.env
+
+   
