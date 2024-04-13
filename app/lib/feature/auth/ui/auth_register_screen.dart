@@ -1,314 +1,136 @@
+import 'package:app/feature/auth/bloc/auth_bloc.dart';
+import 'package:app/feature/tweet/ui/tweets_page.dart';
 import 'package:flutter/material.dart';
 
-class RegistrationPage extends StatefulWidget {
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../design/app_widgets.dart';
+
+class AuthRegisterScreen extends StatefulWidget {
+  const AuthRegisterScreen({super.key});
+
   @override
-  _RegistrationPageState createState() => _RegistrationPageState();
+  State<AuthRegisterScreen> createState() => _AuthRegisterScreenState();
 }
 
-class _RegistrationPageState extends State<RegistrationPage> {
-  late String name, email, password1;
+class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
+  TextEditingController nameController = TextEditingController();
 
-  final _key = new GlobalKey<FormState>();
+  TextEditingController emailController = TextEditingController();
 
-  bool _secureText = true;
+  TextEditingController passwordController = TextEditingController();
 
-  showHide() {
-    setState(() {
-      _secureText = !_secureText;
-    });
-  }
+  final _formKey = Key('form');
 
-  check() {
-    final form = _key.currentState;
-    if (form!.validate()) {
-      form.save();
-    }
-  }
+  bool isLogin = true;
 
+  AuthBloc authBloc = AuthBloc();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          title: Text(
-            "Register",
-            style: TextStyle(color: Colors.black),
-          ),
-          centerTitle: true,
-          backgroundColor: Colors.white,
-        ),
-        body: Stack(
-          children: <Widget>[
-            ListView(
-              shrinkWrap: true,
-              padding: EdgeInsets.all(15.0),
-              children: <Widget>[
-                Column(children: <Widget>[
-                  new Container(
-                    color: Colors.white,
-                    height: 230.0,
-                    child: new Column(
-                      children: <Widget>[
-                        Stack(fit: StackFit.loose, children: <Widget>[
-                          new Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              new Padding(
-                                  padding: EdgeInsets.only(top: 10.0),
-                                  child: (true
-                                      ? Container(
-                                          width: 200,
-                                          height: 200,
-                                          child: ClipOval(
-                                            child: new SizedBox(
-                                                width: 200.0,
-                                                height: 200.0,
-                                                child: CircleAvatar(
-                                                  radius: 40,
-                                                  backgroundColor:
-                                                      Theme.of(context)
-                                                                  .platform ==
-                                                              TargetPlatform.iOS
-                                                          ? Colors.white
-                                                          : Colors.black,
-                                                  child: Image.network(
-                                                      "https://png.pngitem.com/pimgs/s/214-2145309_blank-profile-picture-circle-hd-png-download.png",
-                                                      filterQuality:
-                                                          FilterQuality.high),
-                                                )),
-                                          ),
-                                        )
-                                      : new Container(
-                                          width: 200,
-                                          height: 200,
-                                          child: ClipOval(
-                                              child: new SizedBox(
-                                            width: 200.0,
-                                            height: 200.0,
-                                          )))))
-                            ],
-                          ),
-                          Padding(
-                              padding: EdgeInsets.only(top: 160.0, right: 15.0),
-                              child: new Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: <Widget>[
-                                  new CircleAvatar(
-                                    backgroundColor: Colors.red,
-                                    radius: 25.0,
-                                    child: new IconButton(
-                                      onPressed: () => {},
-                                      icon: Icon(
-                                        Icons.camera_alt,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              )),
-                        ]),
-                      ],
+      appBar: AppBar(leading: Container(), title: AppLogoWidget()),
+      body: BlocConsumer<AuthBloc, AuthState>(
+        bloc: authBloc,
+        listenWhen: (previous, current) => current is AuthActionState,
+        buildWhen: (previous, current) => current is! AuthActionState,
+        listener: (context, state) {
+          if (state is AuthErrorState) {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(state.error)));
+          } else if (state is AuthSuccessState) {
+            Navigator.popUntil(context, (route) => route.isFirst);
+          }
+        },
+        builder: (context, state) {
+          return Form(
+            key: _formKey,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (!isLogin) const SizedBox(height: 32),
+                  if (!isLogin) Text("Enter your Name"),
+                  if (!isLogin)
+                    TextFormField(
+                      controller: nameController,
+                      validator: (val) {
+                        if (val!.isEmpty) {
+                          return "Enter Your Name";
+                        } else {
+                          return null;
+                        }
+                      },
+                      decoration: const InputDecoration(hintText: "Your Name"),
                     ),
+                  const SizedBox(height: 32),
+                  Text("Enter your Email"),
+                  TextFormField(
+                    controller: emailController,
+                    validator: (val) {
+                      if (val!.isEmpty) {
+                        return "Enter Your Email";
+                      } else {
+                        return null;
+                      }
+                    },
+                    decoration: const InputDecoration(hintText: "Your Email"),
                   ),
-                  Column(
-                    children: <Widget>[
-                      Container(
-                        padding: const EdgeInsets.all(8.0),
-                        color: Colors.white,
-                        child: Form(
-                          key: _key,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Theme(
-                                data: ThemeData(
-                                  primaryColor: Colors.black,
-                                ),
-                                child: Container(
-                                  child: TextFormField(
-                                    keyboardType: TextInputType.text,
-                                    cursorColor: Colors.black,
-                                    style: TextStyle(color: Colors.black),
-                                    validator: (input) {
-                                      if (input!.isEmpty) {
-                                        return 'Please enter Name';
-                                      }
-                                    },
-                                    decoration: InputDecoration(
-                                        enabledBorder: OutlineInputBorder(
-                                            borderSide: const BorderSide(
-                                                color: Colors.grey),
-                                            borderRadius:
-                                                BorderRadius.circular(30)),
-                                        contentPadding: EdgeInsets.all(15),
-                                        prefixIcon: Icon(
-                                          Icons.person,
-                                          color: Colors.grey,
-                                        ),
-                                        filled: true,
-                                        fillColor: Colors.white,
-                                        focusColor: Colors.grey,
-                                        border: OutlineInputBorder(
-                                            borderSide:
-                                                BorderSide(color: Colors.black),
-                                            borderRadius:
-                                                BorderRadius.circular(30)),
-                                        hintStyle:
-                                            TextStyle(color: Colors.grey),
-                                        hintText: 'Name'),
-                                    onSaved: (input) => name = input!,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 25,
-                              ),
-                              Theme(
-                                data: ThemeData(
-                                  primaryColor: Colors.black,
-                                ),
-                                child: Container(
-                                  child: TextFormField(
-                                    keyboardType: TextInputType.emailAddress,
-                                    cursorColor: Colors.black,
-                                    style: TextStyle(color: Colors.black),
-                                    validator: (input) {
-                                      if (input!.isEmpty) {
-                                        return 'Enter an email';
-                                      }
-                                    },
-                                    decoration: InputDecoration(
-                                        enabledBorder: OutlineInputBorder(
-                                            borderSide: const BorderSide(
-                                                color: Colors.grey),
-                                            borderRadius:
-                                                BorderRadius.circular(30)),
-                                        contentPadding: EdgeInsets.all(15),
-                                        prefixIcon: Icon(
-                                          Icons.mail_outline,
-                                          color: Colors.grey,
-                                        ),
-                                        filled: true,
-                                        fillColor: Colors.white,
-                                        focusColor: Colors.grey,
-                                        border: OutlineInputBorder(
-                                            borderSide:
-                                                BorderSide(color: Colors.black),
-                                            borderRadius:
-                                                BorderRadius.circular(30)),
-                                        hintStyle:
-                                            TextStyle(color: Colors.grey),
-                                        hintText: 'E-mail'),
-                                    onSaved: (input) => email = input!,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 25,
-                              ),
-                              Theme(
-                                data: ThemeData(
-                                  primaryColor: Colors.black,
-                                ),
-                                child: Container(
-                                  child: TextFormField(
-                                    obscureText: _secureText,
-                                    keyboardType: TextInputType.text,
-                                    cursorColor: Colors.black,
-                                    style: TextStyle(color: Colors.black),
-                                    validator: (input) {
-                                      if (input!.isEmpty) {
-                                        return 'Enter your password';
-                                      }
-                                    },
-                                    decoration: InputDecoration(
-                                        enabledBorder: OutlineInputBorder(
-                                            borderSide: const BorderSide(
-                                                color: Colors.grey),
-                                            borderRadius:
-                                                BorderRadius.circular(30)),
-                                        contentPadding: EdgeInsets.all(15),
-                                        prefixIcon: Icon(
-                                          Icons.lock_outline,
-                                          color: Colors.grey,
-                                        ),
-                                        suffixIcon: IconButton(
-                                          onPressed: showHide,
-                                          icon: Icon(_secureText
-                                              ? Icons.visibility_off
-                                              : Icons.visibility),
-                                        ),
-                                        filled: true,
-                                        fillColor: Colors.white,
-                                        focusColor: Colors.grey,
-                                        border: OutlineInputBorder(
-                                            borderSide:
-                                                BorderSide(color: Colors.black),
-                                            borderRadius:
-                                                BorderRadius.circular(30)),
-                                        hintStyle:
-                                            TextStyle(color: Colors.grey),
-                                        hintText: 'Password'),
-                                    onSaved: (input) => password1 = input!,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 25,
-                              ),
-                              SizedBox(
-                                height: 50.0,
-                                width: MediaQuery.of(context).size.width,
-                                child: ElevatedButton(
-                                    child: Text(
-                                      "Register",
-                                      style: TextStyle(fontSize: 18.0),
-                                    ),
-                                    onPressed: () {
-                                      check();
-                                    }),
-                              ),
-                              SizedBox(
-                                height: 25,
-                              ),
-                              Row(
-                                children: <Widget>[
-                                  Text(
-                                    'Already have an account ?',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontSize: 18.0, color: Colors.black),
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {},
-                                    child: Text(
-                                      ' LOG IN',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontSize: 18.0,
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                height: 25,
-                              ),
-                            ],
-                          ),
+                  const SizedBox(height: 32),
+                  Text("Enter your Password"),
+                  TextFormField(
+                    obscureText: true,
+                    controller: passwordController,
+                    validator: (val) {
+                      if (val!.isEmpty) {
+                        return "Enter Your Password";
+                      } else {
+                        return null;
+                      }
+                    },
+                    decoration:
+                        const InputDecoration(hintText: "Your Password"),
+                  ),
+                  const SizedBox(height: 32),
+                  SizedBox(
+                      height: 50,
+                      width: double.maxFinite,
+                      child: ElevatedButton(
+                          onPressed: () {
+                            authBloc.add(AuthenticationEvent(
+                                authType: isLogin
+                                    ? AuthType.login
+                                    : AuthType.register,
+                                email: emailController.text,
+                                password: passwordController.text));
+                          },
+                          child: Text(isLogin ? "Login" : "Register"))),
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(isLogin
+                          ? "Dont have an account? "
+                          : "Already have an account? "),
+                      InkWell(
+                        onTap: () {
+                          setState(() {
+                            isLogin = !isLogin;
+                          });
+                        },
+                        child: Text(
+                          !isLogin ? "Login" : "Register",
+                          style: TextStyle(color: Colors.deepPurple.shade200),
                         ),
-                      ),
+                      )
                     ],
-                  ),
-                ]),
-              ],
-            )
-          ],
-        ));
+                  )
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
   }
 }

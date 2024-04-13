@@ -9,13 +9,32 @@ class AuthRepo {
   static Future<UserModel?> getUserRepo(String uid) async {
     try {
       Dio dio = Dio();
-      final response = await dio.get("${Config.serverUrl}user/$uid");
+      final response = await dio.get(Config.serverUrl + "user/$uid");
+
       if (response.statusCode! >= 200 && response.statusCode! <= 300) {
-        // UserModel userModel = UserModel.fromMap(response.data);
+        log(response.data.toString());
+        UserModel userModel = UserModel.fromMap(response.data);
+        return userModel;
+      } else {
+        log(response.data.toString());
+        return null;
       }
     } catch (e) {
       log(e.toString());
       return null;
+    }
+  }
+
+  static Future<bool> createUserRepo(UserModel userModel) async {
+    Dio dio = Dio();
+    final response =
+        await dio.post(Config.serverUrl + "user", data: userModel.toMap());
+    if (response.statusCode! >= 200 && response.statusCode! <= 300) {
+      log("true");
+      return true;
+    } else {
+      log("false");
+      return false;
     }
   }
 }

@@ -26,7 +26,7 @@ if (!mongoUri) {
     process.exit(1);
 }
 mongoose_1.default.connect(mongoUri, {}).then(() => {
-    console.log("MOngo COnnected");
+    console.log("Mongo COnnected");
 }).catch((error) => { console.log(error); });
 // Define Routes
 app.use("/api/v1", routes_1.default);

@@ -5,7 +5,8 @@ services:
       context: app
       dockerfile: ./frontend.Dockerfile
     ports:
-      - 8080:80
+      - 80:80
+
 
   ts-backend:
 
@@ -16,5 +17,4 @@ services:
       - 3000:3000
     env_file:
       - /ts-backend/.env
-
-   
+ 

@@ -178,7 +178,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         borderRadius: defaultProceedButtonBorderRadius,
         onTap: () {
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => RegistrationPage()));
+              MaterialPageRoute(builder: (context) => AuthRegisterScreen()));
         },
         child: const Padding(
           padding: defaultProceedButtonPadding,
