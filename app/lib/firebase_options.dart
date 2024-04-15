@@ -47,7 +47,7 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyCZbsLj7-DAa2vtWMKeJ4szGRdpExMjPuQ',
+    apiKey: '',
     appId: '1:464967415855:web:bfe7dde715d003d58e6eda',
     messagingSenderId: '464967415855',
     projectId: 'fireapp-ce31d',
@@ -70,8 +70,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '464967415855',
     projectId: 'fireapp-ce31d',
     storageBucket: 'fireapp-ce31d.appspot.com',
-    androidClientId: '464967415855-r3i3rk0ocr1lne1tmtbh6fkdt4bm8hgr.apps.googleusercontent.com',
-    iosClientId: '464967415855-livvg5b48rkr6sfdbv52da32c26kpj1s.apps.googleusercontent.com',
+    androidClientId:
+        '464967415855-r3i3rk0ocr1lne1tmtbh6fkdt4bm8hgr.apps.googleusercontent.com',
+    iosClientId:
+        '464967415855-livvg5b48rkr6sfdbv52da32c26kpj1s.apps.googleusercontent.com',
     iosBundleId: 'com.example.app',
   );
 }
