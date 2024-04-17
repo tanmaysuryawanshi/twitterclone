@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../design/app_widgets.dart';
+import '../../create_tweet/ui/create_tweet_page.dart';
 import '../bloc/tweet_bloc.dart';
 import 'package:intl/intl.dart';
 
@@ -28,12 +29,12 @@ class _TweetsPageState extends State<TweetsPage> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Navigator.push(
-          //     context,
-          //     MaterialPageRoute(
-          //         builder: (context) => CreateTweetPage(
-          //               tweetBloc: tweetBloc,
-          //             )));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => CreateTweetPage(
+                        tweetBloc: tweetBloc,
+                      )));
         },
         child: Icon(Icons.add),
       ),
